@@ -1,0 +1,63 @@
+<html>
+    <head>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <link rel="stylesheet" href="style.css">
+      <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        
+        let tabella = [];
+        let xmin, xmax, a, b, c;
+
+        document.addEventListener("DOMContentLoaded", function() {
+          document.getElementById("invia").addEventListener("click", function() {
+            xmin = parseFloat(document.getElementById("xmin").value);
+            xmax = parseFloat(document.getElementById("xmax").value); 
+            a = parseFloat(document.getElementById("a").value);
+            b = parseFloat(document.getElementById("b").value);
+            c = parseFloat(document.getElementById("c").value);
+            parabola = document.getElementById("check");
+
+            tabella = [['X', 'Y']];
+            if(parabola.checked){
+              for(let i = xmin; i <= xmax; i++) {
+                  tabella.push([i, (a * i ** 2) + (b * i) + c]);
+              }
+            }
+            else{
+              for(let i = xmin; i <= xmax; i++){
+                tabella.push([i,(a*i+b*i+c)]);
+              }
+            }
+
+            drawChart();
+          });
+        });
+
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable(tabella);
+          var options = {
+            title: 'Grafico della funzione',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            vAxis: {
+              minValue: -2,
+              maxValue: 2
+            }
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+          chart.draw(data, options);
+        }
+      </script>
+    </head>
+    <body>
+      <div id="curve_chart" style="width: 900px; height: 500px"></div>
+      <label for="xmin">xMin:<br><input type="number" id="xmin"></label>
+      <label for="xmax">xMax:<br><input type="number" id="xmax"></label>
+      <label for="a">a:<br><input type="number" id="a"></label>
+      <label for="b">b:<br><input type="number" id="b"></label>
+      <label for="c">c:<br><input type="number" id="c"></label>
+      <label for="check">Parabola <br><input type="checkbox" id="check"></label>
+      <input type="submit" id="invia">
+    </body>
+</html>
