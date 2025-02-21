@@ -4,51 +4,72 @@
       <link rel="stylesheet" href="style.css">
       <script type="text/javascript">
         google.charts.load('current', {'packages':['corechart']});
-        
-        let tabella = [];
-        let xmin, xmax, a, b, c;
-
-        document.addEventListener("DOMContentLoaded", function() {
-          document.getElementById("invia").addEventListener("click", function() {
-            xmin = parseFloat(document.getElementById("xmin").value);
-            xmax = parseFloat(document.getElementById("xmax").value); 
-            a = parseFloat(document.getElementById("a").value);
-            b = parseFloat(document.getElementById("b").value);
-            c = parseFloat(document.getElementById("c").value);
-            parabola = document.getElementById("check");
-
-            tabella = [['X', 'Y']];
-            if(parabola.checked){
-              for(let i = xmin; i <= xmax; i++) {
-                  tabella.push([i, (a * i ** 2) + (b * i) + c]);
-              }
+    
+        class DisegnaFunzione {
+            constructor() {
+                this.tabella = [];
+                this.xmin = 0;
+                this.xmax = 0;
+                this.a = 0;
+                this.b = 0;
+                this.c = 0;
             }
-            else{
-              for(let i = xmin; i <= xmax; i++){
-                tabella.push([i,(a*i+b*i+c)]);
-              }
+    
+            inizializza() {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.getElementById("invia").addEventListener("click", () => {
+                        this.raccogliInput();
+                        this.generaTabella();
+                        this.disegnaGrafico();
+                    });
+                });
             }
-
-            drawChart();
-          });
-        });
-
-        function drawChart() {
-          var data = google.visualization.arrayToDataTable(tabella);
-          var options = {
-            title: 'Grafico della funzione',
-            curveType: 'function',
-            legend: { position: 'bottom' },
-            vAxis: {
-              minValue: -2,
-              maxValue: 2
+    
+            raccogliInput() {
+                this.xmin = parseFloat(document.getElementById("xmin").value);
+                this.xmax = parseFloat(document.getElementById("xmax").value);
+                this.a = parseFloat(document.getElementById("a").value);
+                this.b = parseFloat(document.getElementById("b").value);
+                this.c = parseFloat(document.getElementById("c").value);
             }
-          };
-
-          var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-          chart.draw(data, options);
+    
+            generaTabella() {
+                const parabola = document.getElementById("check");
+    
+                this.tabella = [['X', 'Y']];
+    
+                if (parabola.checked) {
+                    for (let i = this.xmin; i <= this.xmax; i++) {
+                        this.tabella.push([i, (this.a * i ** 2) + (this.b * i) + this.c]);
+                    }
+                } else {
+                    for (let i = this.xmin; i <= this.xmax; i++) {
+                        this.tabella.push([i, (this.a * i) + (this.b * i) + this.c]);
+                    }
+                }
+            }
+    
+            disegnaGrafico() {
+                var dati = google.visualization.arrayToDataTable(this.tabella);
+                var opzioni = {
+                    title: 'Grafico della funzione',
+                    curveType: 'function',
+                    legend: { position: 'bottom' },
+                    vAxis: {
+                        minValue: -2,
+                        maxValue: 2
+                    }
+                };
+    
+                var grafico = new google.visualization.LineChart(document.getElementById('curve_chart'));
+                grafico.draw(dati, opzioni);
+            }
         }
-      </script>
+    
+        const disegna = new DisegnaFunzione();
+        disegna.inizializza();
+    </script>
+    
     </head>
     <body>
       <div id="curve_chart" style="width: 900px; height: 500px"></div>
